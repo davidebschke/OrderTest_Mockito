@@ -27,9 +27,15 @@ class ProductServiceTest {
     @Test
     void listProducts() {
         //given
-        ProductRepo productRepo = new ProductRepo();
-        ProductService productService = new ProductService(productRepo);
+        ProductRepo productRepo = mock(ProductRepo.class);
 
+        ProductService productService = new ProductService(productRepo);
+        when(productRepo.listProducts()).thenReturn(List.of(
+                new Product(1, "Apfel"),
+                new Product(2, "Banane"),
+                new Product(3, "Zitrone"),
+                new Product(4, "Mandarine")
+        ));
         //when
         List<Product> actual = productService.listProducts();
 
