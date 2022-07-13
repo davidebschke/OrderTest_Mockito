@@ -28,7 +28,7 @@ public class OrderIntegrationTest {
 
 @Test
 @DirtiesContext
-    void addOrder() throws Exception {
+    void addOrderAndShowOrder() throws Exception {
         mockMvc.perform(
                         post("/api/orders/42")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -48,6 +48,41 @@ public class OrderIntegrationTest {
                         """));
 
     }
+
+    @Test
+    @DirtiesContext
+    void addOrdersAndShowOrders() throws Exception {
+        mockMvc.perform(
+                        post("/api/orders/42")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        [2,3]
+                                        """)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().string("""
+                        """));
+        mockMvc.perform(
+        post("/api/orders/41")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                                        [1,4]
+                                        """)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().string("""
+                        """));
+        mockMvc
+                .perform(get("/api/orders")
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        [{"id":41,"products":[{"id":1,"name":"Apfel"},{"id":4,"name":"Mandarine"}]},{"id":42,"products":[{"id":2,"name":"Banane"},{"id":3,"name":"Zitrone"}]}]
+                        """));
+
+    }
+
+
 
 
 
